@@ -7,6 +7,6 @@
 6. Sort ```.sam``` file using ```samtools sort```
 7. Convert sorted .sam file to bam file
 8. Index bam file ```samtools index```
-9. Install IGV Integrated Genome Viewer.
+9. Install IGV Integrated Genome Viewer [https://igv.org/].
 10. Download ```.bam``` file and ```.bai``` index and ```reference.fasta``` and ```reference.fasta.fai```
 11. View the alignment in IGV viewer
