@@ -1,4 +1,6 @@
 # To Do Steps
+Some basic knowledge: [https://github.com/dpaudel/NepalBioinformatics]
+
 1. Run FASTQC on raw files 
 2. Run fastp on raw files
 3. Run FASTQC on trimmed files
