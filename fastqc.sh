@@ -86,6 +86,11 @@ fastp \
 
   #run_fastqc_on_trimmed_file
   mkdir -p fastqc_trimmed
+  fastqc fastp_out/*.trimmed.fastq.gz -o fastqc_trimmed -t 8 
+  #for_imdividual
+  fastqc fastp_out/4-Rest_R1.trimmed.fastq.gz fastp_out/4-Rest_R2.trimmed.fastq.gz \
+    -o fastqc_trimmed -t 8
+
   
 done
 
