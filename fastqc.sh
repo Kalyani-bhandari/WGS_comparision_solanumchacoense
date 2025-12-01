@@ -91,6 +91,46 @@ fastp \
   fastqc fastp_out/4-Rest_R1.trimmed.fastq.gz fastp_out/4-Rest_R2.trimmed.fastq.gz \
     -o fastqc_trimmed -t 8
 
-  
+#index_reference_genome
+cd /home/g89x126/sc_wgs
+
+# samtools index
+samtools faidx reference.fasta
+
+# bwa index
+bwa index reference.fasta
+
+#align_trimmed_file_with_reference(align_one.sh)
+  #!/bin/bash
+
+conda activate wgs_env
+
+REF="/home/g89x126/sc_wgs/reference.fasta"
+TRIMDIR="/home/g89x126/sc_wgs/fastp_out"
+OUTDIR="/home/g89x126/sc_wgs/bam"
+
+mkdir -p $OUTDIR
+
+# CHANGE THIS LINE FOR EACH SAMPLE
+SAMPLE="4-Rest"
+
+R1="${TRIMDIR}/${SAMPLE}_R1.trimmed.fastq.gz"
+R2="${TRIMDIR}/${SAMPLE}_R2.trimmed.fastq.gz"
+
+echo "Aligning sample: $SAMPLE"
+echo "Using:"
+echo "R1 = $R1"
+echo "R2 = $R2"
+
+# ALIGNMENT → BAM SORTING
+bwa mem -t 8 $REF $R1 $R2 \
+    | samtools view -b -@ 4 - \
+    | samtools sort -@ 4 -o ${OUTDIR}/${SAMPLE}.sorted.bam -
+
+# INDEX BAM
+samtools index ${OUTDIR}/${SAMPLE}.sorted.bam
+
+echo "DONE: ${OUTDIR}/${SAMPLE}.sorted.bam"
+
 done
 
