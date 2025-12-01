@@ -132,5 +132,16 @@ samtools index ${OUTDIR}/${SAMPLE}.sorted.bam
 
 echo "DONE: ${OUTDIR}/${SAMPLE}.sorted.bam"
 
+
+#RUN_VARIANT_CALLING_USING_bcftools
+mkdir -p vcf 
+bcftools mpileup -Ou -f reference.fasta bam/5-Susp.sorted.bam \
+| bcftools call -mv -Oz -o vcf/5-Susp.vcf.gz
+
+#index_vcf_file
+bcftools index vcf/5-Susp.vcf.gz
+
+
+
 done
 
