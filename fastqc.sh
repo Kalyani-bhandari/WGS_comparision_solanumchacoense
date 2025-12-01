@@ -1,3 +1,4 @@
+source ~/.bashrc
 conda activate wgs_env
 mkdir -p fastqc_raw   #outputfolder
 fastqc -t 4 \          #run fastqc
@@ -20,21 +21,63 @@ fastqc -t 4 \
     4-Susp_R2_001.fastq \
     -o fastqc_raw
 
-    mkdir -p fastp_out  #fastp trimming
-    for R1 in *_R1_001.fastq; do
-    R2="${R1/_R1_001.fastq/_R2_001.fastq}"
-    SAMPLE=$(basename "$R1" _R1_001.fastq)
+  mkdir -p fastp_out
 
-    echo "Running fastp on sample: $SAMPLE"
+R1="4-Rest_R1_001.fastq"
+R2="4-Rest_R2_001.fastq"
+SAMPLE="4-Rest"
 
-    fastp \
-        -i "$R1" \
-        -I "$R2" \
-        -o "fastp_out/${SAMPLE}_R1.trimmed.fastq.gz" \
-        -O "fastp_out/${SAMPLE}_R2.trimmed.fastq.gz" \
-        --html "fastp_out/${SAMPLE}.html" \
-        --json "fastp_out/${SAMPLE}.json" \
-        --detect_adapter_for_pe \
-        --thread 8
+fastp \
+  -i "$R1" \
+  -I "$R2" \
+  -o "fastp_out/${SAMPLE}_R1.trimmed.fastq.gz" \
+  -O "fastp_out/${SAMPLE}_R2.trimmed.fastq.gz" \
+  --html "fastp_out/${SAMPLE}.html" \
+  --json "fastp_out/${SAMPLE}.json" \
+  --detect_adapter_for_pe \
+  --thread 8
+
+R1="5-Rest_R1_001.fastq"
+R2="5-Rest_R2_001.fastq"
+SAMPLE="4-Rest"
+
+fastp \
+  -i "$R1" \
+  -I "$R2" \
+  -o "fastp_out/${SAMPLE}_R1.trimmed.fastq.gz" \
+  -O "fastp_out/${SAMPLE}_R2.trimmed.fastq.gz" \
+  --html "fastp_out/${SAMPLE}.html" \
+  --json "fastp_out/${SAMPLE}.json" \
+  --detect_adapter_for_pe \
+  --thread 8 
+
+R1="4-Susp_R1_001.fastq"
+R2="4-Susp_R2_001.fastq"
+SAMPLE="4-Rest"
+
+fastp \
+  -i "$R1" \
+  -I "$R2" \
+  -o "fastp_out/${SAMPLE}_R1.trimmed.fastq.gz" \
+  -O "fastp_out/${SAMPLE}_R2.trimmed.fastq.gz" \
+  --html "fastp_out/${SAMPLE}.html" \
+  --json "fastp_out/${SAMPLE}.json" \
+  --detect_adapter_for_pe \
+  --thread 8
+
+
+R1="5-Susp_R1_001.fastq"
+R2="5-Susp_R2_001.fastq"
+SAMPLE="4-Rest"
+
+fastp \
+  -i "$R1" \
+  -I "$R2" \
+  -o "fastp_out/${SAMPLE}_R1.trimmed.fastq.gz" \
+  -O "fastp_out/${SAMPLE}_R2.trimmed.fastq.gz" \
+  --html "fastp_out/${SAMPLE}.html" \
+  --json "fastp_out/${SAMPLE}.json" \
+  --detect_adapter_for_pe \
+  --thread 8
 done
 
