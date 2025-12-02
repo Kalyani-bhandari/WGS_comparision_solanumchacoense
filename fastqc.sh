@@ -141,7 +141,32 @@ bcftools mpileup -Ou -f reference.fasta bam/5-Susp.sorted.bam \
 #index_vcf_file
 bcftools index vcf/5-Susp.vcf.gz
 
+#filter_vcf_file
+mkdir -p vcf_filtered
 
+bcftools filter \
+   -e 'QUAL<30 || DP<20 || MQ<30 || MQ0F>0.1' \
+   vcf/4-Rest.vcf.gz -Oz -o vcf_filtered/4-Rest.filtered.vcf.gz
+
+bcftools index vcf_filtered/4-Rest.filtered.vcf.gz
+
+bcftools filter \
+   -e 'QUAL<30 || DP<20 || MQ<30 || MQ0F>0.1' \
+   vcf/4-Susp.vcf.gz -Oz -o vcf_filtered/4-Susp.filtered.vcf.gz
+
+bcftools index vcf_filtered/4-Susp.filtered.vcf.gz
+
+bcftools filter \
+   -e 'QUAL<30 || DP<20 || MQ<30 || MQ0F>0.1' \
+   vcf/5-Susp.vcf.gz -Oz -o vcf_filtered/5-Susp.filtered.vcf.gz
+
+bcftools index vcf_filtered/5-Susp.filtered.vcf.gz
+
+bcftools filter \
+   -e 'QUAL<30 || DP<20 || MQ<30 || MQ0F>0.1' \
+   vcf/5-Rest.vcf.gz -Oz -o vcf_filtered/5-Rest.filtered.vcf.gz
+
+bcftools index vcf_filtered/5-Rest.filtered.vcf.gz
 
 done
 
