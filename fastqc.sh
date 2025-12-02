@@ -144,29 +144,98 @@ bcftools index vcf/5-Susp.vcf.gz
 #filter_vcf_file
 mkdir -p vcf_filtered
 
+
 bcftools filter \
-   -e 'QUAL<30 || DP<20 || MQ<30 || MQ0F>0.1' \
+   -e 'QUAL<30 || DP<8 || MQ<30 || MQ0F>0.05 || VDB<0.0001 || SGB<-0.6' \
    vcf/4-Rest.vcf.gz -Oz -o vcf_filtered/4-Rest.filtered.vcf.gz
 
-bcftools index vcf_filtered/4-Rest.filtered.vcf.gz
+   bcftools index vcf_filtered/4-Rest.filtered.vcf.gz
+
 
 bcftools filter \
-   -e 'QUAL<30 || DP<20 || MQ<30 || MQ0F>0.1' \
+   -e  'QUAL<30 || DP<8 || MQ<30 || MQ0F>0.05 || VDB<0.0001 || SGB<-0.6' \
    vcf/4-Susp.vcf.gz -Oz -o vcf_filtered/4-Susp.filtered.vcf.gz
 
 bcftools index vcf_filtered/4-Susp.filtered.vcf.gz
 
 bcftools filter \
-   -e 'QUAL<30 || DP<20 || MQ<30 || MQ0F>0.1' \
+   -e  'QUAL<30 || DP<8 || MQ<30 || MQ0F>0.05 || VDB<0.0001 || SGB<-0.6' \
    vcf/5-Susp.vcf.gz -Oz -o vcf_filtered/5-Susp.filtered.vcf.gz
 
 bcftools index vcf_filtered/5-Susp.filtered.vcf.gz
 
 bcftools filter \
-   -e 'QUAL<30 || DP<20 || MQ<30 || MQ0F>0.1' \
+   -e  'QUAL<30 || DP<8 || MQ<30 || MQ0F>0.05 || VDB<0.0001 || SGB<-0.6' \
    vcf/5-Rest.vcf.gz -Oz -o vcf_filtered/5-Rest.filtered.vcf.gz
 
 bcftools index vcf_filtered/5-Rest.filtered.vcf.gz
+
+#Compare_Resistant_vs_Susceptible_VCFs
+
+#Resistant_shared_mutations:
+mkdir -p compare/resistant
+
+bcftools isec \
+   vcf_filtered/4-Rest.filtered.vcf.gz \
+   vcf_filtered/5-Rest.filtered.vcf.gz \
+   -p compare/resistant
+   bgzip compare/resistant/0002.vcf
+tabix -p vcf compare/resistant/0002.vcf.gz
+
+
+#Susceptible_shared_mutations:
+mkdir -p compare/susceptible
+
+bcftools isec \
+   vcf_filtered/4-Susp.filtered.vcf.gz \
+   vcf_filtered/5-Susp.filtered.vcf.gz \
+   -p compare/susceptible
+   bgzip compare/susceptible/0002.vcf
+tabix -p vcf compare/susceptible/0002.vcf.gz
+
+#Mutation_only_in_resistant
+mkdir -p compare/final
+
+bcftools isec \
+   compare/resistant/0002.vcf.gz \
+   compare/susceptible/0002.vcf.gz \
+   -p compare/final
+#indexingandcompress
+bgzip compare/final/0000.vcf
+tabix -p vcf compare/final/0000.vcf.gz
+
+bgzip compare/final/0001.vcf
+tabix -p vcf compare/final/0001.vcf.gz
+
+bgzip compare/final/0002.vcf
+tabix -p vcf compare/final/0002.vcf.gz
+
+#Filter EMS-type SNPs from final/0000.vcf.gz
+mkdir -p compare/ems_filtered
+
+bcftools view \
+   -i '(REF="G" && ALT="A") || (REF="C" && ALT="T")' \
+   compare/final/0000.vcf.gz \
+   -Oz -o compare/ems_filtered/0000.EMS.vcf.gz
+#index_and_compress
+tabix -p vcf compare/ems_filtered/0000.EMS.vcf.gz
+
+#Count_SNPs_and_Indels
+bcftools view -H compare/final/0000.vcf.gz | wc -l
+bcftools view -H compare/ems_filtered/0000.EMS.vcf.gz | wc -l
+bcftools view -i 'TYPE="indel"' compare/final/0000.vcf.gz | wc -l
+
+#Extract_high-impact_mutations
+bcftools filter -i 'MQ>=40 && DP>=10 && TYPE="snp"' \
+   compare/ems_filtered/0000.EMS.vcf.gz \
+| bcftools csq --force \
+   -f reference.fasta \
+   -g reference.gff3 \
+   -Oz -o EMS.csq.vcf.gz
+
+
+
+
 
 done
 
