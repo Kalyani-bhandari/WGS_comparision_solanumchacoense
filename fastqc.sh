@@ -1,6 +1,8 @@
 source ~/.bashrc
 conda activate wgs_env
 mkdir -p fastqc_raw   #outputfolder
+
+STEP:1
 #run_fastq_on_raw_file
 fastqc -t 4 \          
     4-Rest_R1_001.fastq \
@@ -21,7 +23,8 @@ fastqc -t 4 \
     4-Susp_R1_001.fastq \
     4-Susp_R2_001.fastq \
     -o fastqc_raw
-
+    
+STEP:2
 #run_fastptrimming_on_raw_file
 
   mkdir -p fastp_out
@@ -83,7 +86,7 @@ fastp \
   --detect_adapter_for_pe \
   --thread 8
 
-
+STEP:3
   #run_fastqc_on_trimmed_file
   mkdir -p fastqc_trimmed
   fastqc fastp_out/*.trimmed.fastq.gz -o fastqc_trimmed -t 8 
@@ -94,12 +97,13 @@ fastp \
 #index_reference_genome
 cd /home/g89x126/sc_wgs
 
-# samtools index
+#samtools_index
 samtools faidx reference.fa
 
-# bwa index
+#bwa_index
 bwa index reference.fa
 
+STEP:4
 #align_trimmed_file_with_reference(align_one.sh)
   #!/bin/bash
 
@@ -133,6 +137,7 @@ samtools index ${OUTDIR}/${SAMPLE}.sorted.bam
 echo "DONE: ${OUTDIR}/${SAMPLE}.sorted.bam"
 
 
+STEP:5
 #RUN_VARIANT_CALLING_USING_bcftools
 mkdir -p vcf 
 bcftools mpileup -Ou -f reference.fasta bam/5-Susp.sorted.bam \
@@ -141,9 +146,10 @@ bcftools mpileup -Ou -f reference.fasta bam/5-Susp.sorted.bam \
 #index_vcf_file
 bcftools index vcf/5-Susp.vcf.gz
 
+STEP:6
+
 #filter_vcf_file
 mkdir -p vcf_filtered
-
 
 bcftools filter \
    -e 'QUAL<30 || DP<8 || MQ<30 || MQ0F>0.05 || VDB<0.0001 || SGB<-0.6' \
@@ -170,6 +176,8 @@ bcftools filter \
 
 bcftools index vcf_filtered/5-Rest.filtered.vcf.gz
 
+STEP:7
+
 #Extract_EMS_Mutation_only
 mkdir -p EMS_vcfs
 
@@ -186,14 +194,13 @@ done
 #countit
 bcftools stats EMS_vcfs/4-Rest.EMS.vcf.gz | grep "number of records"
 
-
-#FILTER_ONLY_REST_OR_ONLY_SUSP
+STEP:8 
+#Filter_Rest_Or_Susp_only
 
 bcftools isec \
     -p compare4 \
     EMS_vcfs/4-Rest.EMS.vcf.gz \
     EMS_vcfs/4-Susp.EMS.vcf.gz
-
 
 bgzip compare4/0000.vcf
 bcftools index compare4/0000.vcf.gz
@@ -225,31 +232,31 @@ bcftools view -H compare4/4-Rest_only.vcf.gz | wc -l
 bcftools view -H compare4/4-Susp_only.vcf.gz | wc -l
 bcftools view -H compare4/0002.vcf.gz | wc -l
 
+STEP:9
+#common_snps_in_both_resistance_lines_4
 
-#common snps in both resistance lines 4 and that is not in susp
-
-# 1. Shared resistant SNPs
+#Shared_resistant_SNPs
 bcftools isec -n=2 EMS_vcfs/4-Rest.EMS.vcf.gz EMS_vcfs/5-Rest.EMS.vcf.gz -p Rest_shared
 bgzip Rest_shared/0000.vcf
 bcftools index Rest_shared/0000.vcf.gz
 
-# 2. Shared susceptible SNPs
+#Shared_susceptible_SNPs
 bcftools isec -n=2 EMS_vcfs/4-Susp.EMS.vcf.gz EMS_vcfs/5-Susp.EMS.vcf.gz -p Susp_shared
 
 bgzip Susp_shared/0000.vcf
 bcftools index Susp_shared/0000.vcf.gz
 
-# 3. Resistance-specific SNPs
+#Resistance-specific_SNPs
 bcftools isec Rest_shared/0000.vcf.gz Susp_shared/0000.vcf.gz -p Resistance_unique
 
 bgzip Resistance_unique/0000.vcf
 bcftools index Resistance_unique/0000.vcf.gz
 
-# 4. Count final candidates
+#Count_final_candidates
 bcftools view -H Resistance_unique/0000.vcf.gz | wc -l
 bcftools view -H Resistance_unique/Resistance_unique.vcf.gz | head
 
-#5. Susceptible_unique_SNPs
+#Susceptible_unique_SNPs
 bcftools isec \
     Susp_shared/0000.vcf.gz \
     Rest_shared/0000.vcf.gz \
@@ -258,24 +265,10 @@ bcftools isec \
 bgzip Susceptible_unique/0000.vcf
 bcftools index Susceptible_unique/0000.vcf.gz
 
-
-# 6. Count final candidates
+#Count_final_candidates
 bcftools view -H Susceptible_unique/0000.vcf.gz | wc -l
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+STEP:10
 #annotation
 #snepff_database
 mkdir -p snpeff/data/solanum_chacoense_m6
@@ -313,7 +306,6 @@ bcftools csq \
     -g m6.hc.gene_models.chr_corrected.gff3 \
     EMS_vcfs/4-Rest.EMS.vcf.gz \
     -Oz -o EMS_vcfs/4-Rest.EMS.annotated.v2.vcf.gz
-
    
 bcftools +split-vep EMS_vcfs/4-Rest.EMS.annotated.vcf.gz \
     -d both \
@@ -329,82 +321,6 @@ bcftools +split-vep \
     -Oz -o EMS_vcfs/4-Rest.EMS.split.vcf.gz
 
 bcftools index -f EMS_vcfs/4-Rest.EMS.split.vcf.gz
-
-
-
-
-#Compare_Resistant_vs_Susceptible_VCFs
-
-#Resistant_shared_mutations:
-mkdir -p compare/resistant
-
-bcftools isec \
-   vcf_filtered/4-Rest.filtered.vcf.gz \
-   vcf_filtered/5-Rest.filtered.vcf.gz \
-   -p compare/resistant
-   bgzip compare/resistant/0002.vcf
-tabix -p vcf compare/resistant/0002.vcf.gz
-
-
-#Susceptible_shared_mutations:
-mkdir -p compare/susceptible
-
-bcftools isec \
-   vcf_filtered/4-Susp.filtered.vcf.gz \
-   vcf_filtered/5-Susp.filtered.vcf.gz \
-   -p compare/susceptible
-   bgzip compare/susceptible/0002.vcf
-tabix -p vcf compare/susceptible/0002.vcf.gz
-
-#Mutation_only_in_resistant
-mkdir -p compare/final
-
-bcftools isec \
-   compare/resistant/0002.vcf.gz \
-   compare/susceptible/0002.vcf.gz \
-   -p compare/final
-#indexingandcompress
-bgzip compare/final/0000.vcf
-tabix -p vcf compare/final/0000.vcf.gz
-
-bgzip compare/final/0001.vcf
-tabix -p vcf compare/final/0001.vcf.gz
-
-bgzip compare/final/0002.vcf
-tabix -p vcf compare/final/0002.vcf.gz
-
-#Filter EMS-type SNPs from final/0000.vcf.gz
-mkdir -p compare/ems_filtered
-
-bcftools view \
-   -i '(REF="G" && ALT="A") || (REF="C" && ALT="T")' \
-   compare/final/0000.vcf.gz \
-   -Oz -o compare/ems_filtered/0000.EMS.vcf.gz
-#index_and_compress
-tabix -p vcf compare/ems_filtered/0000.EMS.vcf.gz
-
-#Count_SNPs_and_Indels
-bcftools view -H compare/final/0000.vcf.gz | wc -l
-bcftools view -H compare/ems_filtered/0000.EMS.vcf.gz | wc -l
-bcftools view -i 'TYPE="indel"' compare/final/0000.vcf.gz | wc -l
-
-#Extract_high-impact_mutations
-bcftools filter -i 'MQ>=40 && DP>=10 && TYPE="snp"' \
-   compare/ems_filtered/0000.EMS.vcf.gz \
-| bcftools csq --force \
-   -f reference.fa \
-   -g reference.gff3 \
-   -Oz -o EMS.csq.vcf.gz
-grep -v "#" reference.gff3 | cut -f1 | head
-grep -v "#" m6.hc.gene_models.chr_corrected.gff3 | cut -f1 | head
-
-bcftools csq --force \
-   -f reference.fa \
-   -g m6.hc.gene_models.chr_corrected.gff3 \
-   -Oz -o EMS.annotated.vcf.gz \
-   compare/ems_filtered/0000.EMS.vcf.gz
-
-
 
 
 done
