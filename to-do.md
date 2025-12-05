@@ -17,3 +17,7 @@ Some basic knowledge: [https://github.com/dpaudel/NepalBioinformatics]
 - Identify variants with HIGH effect > count number
 - Merge with functional annotation < to see which gene the variant is in >
 - Filter genes that have disease resistance background annotation eg NBS-LRR genes
+
+## If snpeff doesnt work
+- extract SNPs that are in genic regions only
+- check if they are related to disease resistance
