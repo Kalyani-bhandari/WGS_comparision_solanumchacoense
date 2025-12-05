@@ -19,5 +19,6 @@ Some basic knowledge: [https://github.com/dpaudel/NepalBioinformatics]
 - Filter genes that have disease resistance background annotation eg NBS-LRR genes
 
 ## If snpeff doesnt work
+bed file is 0-based, gff file is 1 based
 - extract SNPs that are in genic regions only using ```bedtools```
 - check if they are related to disease resistance
