@@ -12,3 +12,8 @@ Some basic knowledge: [https://github.com/dpaudel/NepalBioinformatics]
 9. Install IGV Integrated Genome Viewer [https://igv.org/].
 10. Download ```.bam``` file and ```.bai``` index and ```reference.fasta``` and ```reference.fasta.fai```
 11. View the alignment in IGV viewer
+
+## After running SNPeff
+- Identify variants with HIGH effect > count number
+- Merge with functional annotation < to see which gene the variant is in >
+- Filter genes that have disease resistance background annotation eg NBS-LRR genes
