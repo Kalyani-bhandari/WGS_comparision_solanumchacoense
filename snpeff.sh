@@ -83,10 +83,16 @@ join Resistance_MODERATE_genes.sorted.txt functional_annotation.sorted.txt \
 
 bcftools view -i 'INFO/ANN ~ "HIGH"' Resistance.annotated.vcf.gz \
     -Oz -o Resistance.HIGH.vcf.gz
+bcftools index Resistance.HIGH.vcf.gz
     
     bcftools view -i 'INFO/ANN ~ "HIGH|MODERATE"' Susceptible.annotated.vcf.gz \
   -Oz -o Susceptible.HIGH.vcf.gz
   bcftools index Susceptible.HIGH.vcf.gz
+
+  
+zcat Resistance.HIGH.vcf.gz | head
+ zmore Resistance.HIGH.vcf.gz
+
 
 zcat Susceptible.HIGH.vcf.gz | head
 zgrep -v "^#" Susceptible.HIGH.vcf.gz | head
@@ -125,5 +131,37 @@ join -t $'\t' Susceptible_MODERATE_genes.sorted.txt functional_annotation.sorted
 
 
 
+#Chromosomal_location
+Extract gene ID from BED and convert to: gene_id chrom start
+awk 'BEGIN{OFS="\t"} {
+    # Extract ID=... until semicolon
+    match($4, /ID=([^;]+)/, arr);
+    gene = arr[1];
+    print gene, $1, $2, $3
+}' bed_mRNA.bed > bed_gene_locations.tsv
 
+Sort all files by gene ID
+sort -k1,1 bed_gene_locations.tsv > bed_gene_locations.sorted.tsv
+sort -k1,1 Susceptible_MODERATE_genes_with_annotation.txt > S_mod.sorted.txt
+sort -k1,1 Resistance_MODERATE_genes_with_annotation.txt > R_mod.sorted.txt
 
+#JOIN susceptible list with BED genomic locations
+join -t $'\t' -1 1 -2 1 S_mod.sorted.txt bed_gene_locations.sorted.tsv \
+    > Susceptible_MODERATE_genes_with_locations.tsv
+
+#JOIN resistant list with BED genomic locations
+join -t $'\t' -1 1 -2 1 R_mod.sorted.txt bed_gene_locations.sorted.tsv \
+    > Resistance_MODERATE_genes_with_locations.tsv
+
+#TSV_FILE
+tr '\t' ',' < Susceptible_MODERATE_genes_with_locations.tsv \
+    > Susceptible_MODERATE_genes_with_locations.csv
+
+tr '\t' ',' < Resistance_MODERATE_genes_with_locations.tsv \
+    > Resistance_MODERATE_genes_with_locations.csv
+
+	zcat Resistance.annotated.vcf.gz | head
+
+zmore Resistance.annotated.vcf.gz
+zgrep -w "HIGH" Susceptible.annotated.vcf.gz
+zgrep -w "MODERATE" Susceptible.annotated.vcf.gz
