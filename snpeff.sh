@@ -163,5 +163,46 @@ tr '\t' ',' < Resistance_MODERATE_genes_with_locations.tsv \
 	zcat Resistance.annotated.vcf.gz | head
 
 zmore Resistance.annotated.vcf.gz
+
+
+
+
+
+
+
 zgrep -w "HIGH" Susceptible.annotated.vcf.gz
 zgrep -w "MODERATE" Susceptible.annotated.vcf.gz
+
+
+
+
+
+#SEQUENCE_EXTRACTION_from_CSV_FILE
+1. #For:Resistance_MODERATE_genes_with_locations.csv
+
+#extract transcript_ids
+cd /home/g89x126/sc_wgs/snpeff
+
+cut -d',' -f1 Resistance_MODERATE_genes_with_locations.csv \
+    > Resistance_MODERATE_geneIDs.txt
+
+	head Resistance_MODERATE_geneIDs.txt
+#Extract CDS FASTA only for these genes
+cd /home/g89x126/sc_wgs/snpeff/data/solanum_chacoense_m6
+
+seqkit grep -f /home/g89x126/sc_wgs/snpeff/Resistance_MODERATE_geneIDs.txt \
+    cds.fa > MODERATE_CDS.fa
+
+#Extract protein sequences
+seqkit grep -f /home/g89x126/sc_wgs/snpeff/Resistance_MODERATE_geneIDs.txt \
+    protein.fa > MODERATE_Protein.fa
+
+#Extractgenomicdna
+
+awk -F',' '{print $3"\t"$4"\t"$5"\t"$1}' \
+    /home/g89x126/sc_wgs/snpeff/Resistance_MODERATE_genes_with_locations.csv \
+    > MODERATE_genes.bed
+bedtools getfasta \
+    -fi sequences.fa \
+    -bed MODERATE_genes.bed \
+    -fo MODERATE_genomic.fa
