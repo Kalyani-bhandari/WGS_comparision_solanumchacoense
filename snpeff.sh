@@ -191,18 +191,63 @@ cut -d',' -f1 Resistance_MODERATE_genes_with_locations.csv \
 cd /home/g89x126/sc_wgs/snpeff/data/solanum_chacoense_m6
 
 seqkit grep -f /home/g89x126/sc_wgs/snpeff/Resistance_MODERATE_geneIDs.txt \
-    cds.fa > MODERATE_CDS.fa
+    cds.fa > Resistance_MODERATE_CDS.fa
 
 #Extract protein sequences
 seqkit grep -f /home/g89x126/sc_wgs/snpeff/Resistance_MODERATE_geneIDs.txt \
-    protein.fa > MODERATE_Protein.fa
+    protein.fa > Resistance_MODERATE_Protein.fa
 
 #Extractgenomicdna
+conda install -c bioconda bedtools
+awk -F',' 'BEGIN{OFS="\t"} {print $3, $4-1, $5, $1}' \
+/home/g89x126/sc_wgs/snpeff/Resistance_MODERATE_genes_with_locations.csv \
+> Resistance_MODERATE_genes.bed
 
-awk -F',' '{print $3"\t"$4"\t"$5"\t"$1}' \
-    /home/g89x126/sc_wgs/snpeff/Resistance_MODERATE_genes_with_locations.csv \
-    > MODERATE_genes.bed
+
+
 bedtools getfasta \
     -fi sequences.fa \
-    -bed MODERATE_genes.bed \
-    -fo MODERATE_genomic.fa
+    -bed Resistance_MODERATE_genes.bed \
+    -fo Resistance_MODERATE_genomic.fa
+
+grep "^>" Resistance_MODERATE_genomic.fa
+grep -c "^>" Resistance_MODERATE_genomic.fa
+
+
+2. #For:Susceptible_MODERATE_genes_with_locations.csv
+
+#extract transcript_ids
+cd /home/g89x126/sc_wgs/snpeff
+
+cut -d',' -f1 Susceptible_MODERATE_genes_with_locations.csv \
+    >Susceptible_MODERATE_geneIDs.txt
+
+	head Susceptible_MODERATE_geneIDs.txt
+#Extract CDS FASTA only for these genes
+
+cd /home/g89x126/sc_wgs/snpeff/data/solanum_chacoense_m6
+
+seqkit grep -f /home/g89x126/sc_wgs/snpeff/Susceptible_MODERATE_geneIDs.txt \
+    cds.fa > Susceptible_MODERATE_CDS.fa
+
+#Extract protein sequences
+seqkit grep -f /home/g89x126/sc_wgs/snpeff/Susceptible_MODERATE_geneIDs.txt \
+    protein.fa > Susceptible_MODERATE_Protein.fa
+
+#Extractgenomicdna
+conda install -c bioconda bedtools
+awk -F',' 'BEGIN{OFS="\t"} {print $3, $4-1, $5, $1}' \
+/home/g89x126/sc_wgs/snpeff/Susceptible_MODERATE_genes_with_locations.csv \
+> Susceptible_MODERATE_genes.bed
+
+
+
+bedtools getfasta \
+    -fi sequences.fa \
+    -bed Susceptible_MODERATE_genes.bed \
+    -fo Susceptible_MODERATE_genomic.fa
+
+grep "^>" Susceptible_MODERATE_genomic.fa
+grep -c "^>" Susceptible_MODERATE_genomic.fa
+
+
