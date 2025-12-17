@@ -223,6 +223,7 @@ cut -d',' -f1 Susceptible_MODERATE_genes_with_locations.csv \
     >Susceptible_MODERATE_geneIDs.txt
 
 	head Susceptible_MODERATE_geneIDs.txt
+	
 #Extract CDS FASTA only for these genes
 
 cd /home/g89x126/sc_wgs/snpeff/data/solanum_chacoense_m6
@@ -240,6 +241,25 @@ awk -F',' 'BEGIN{OFS="\t"} {print $3, $4-1, $5, $1}' \
 /home/g89x126/sc_wgs/snpeff/Susceptible_MODERATE_genes_with_locations.csv \
 > Susceptible_MODERATE_genes.bed
 
+
+#fixing_bed_file_for_some_reason
+cd /home/g89x126/sc_wgs/snpeff
+awk -F',' 'BEGIN{OFS="\t"} {
+    gene=$1
+    chrom=$3
+    start=$4
+    end=$5
+
+    if (start > 0) start=start-1
+    if (chrom ~ /^M6_v4/) print chrom, start, end, gene
+}' Susceptible_MODERATE_genes_with_locations.csv \
+> Susceptible_MODERATE_genes.bed
+
+
+
+mv Susceptible_MODERATE_genes.bed /home/g89x126/sc_wgs/snpeff/data/solanum_chacoense_m6/
+
+cd /home/g89x126/sc_wgs/snpeff/data/solanum_chacoense_m6
 
 
 bedtools getfasta \
