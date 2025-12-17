@@ -3,71 +3,73 @@ library(ggrepel)
 
 setwd("C:/Users/g89x126/Downloads")
 
-# Load chromosome sizes
+### ---- LOAD CHROMOSOME FILE ----
+# chromosome.txt must contain: chr \t length
 chrom <- read.table("chromosome.txt", header=TRUE, sep="\t",
                     colClasses=c("character","numeric"))
 
-# Load SNP list
+colnames(chrom) <- c("chr", "length")   # ensure consistent naming
+
+### ---- LOAD SNP FILE ----
 snps <- read.table("snps.txt", header=TRUE, sep="\t",
                    colClasses=c("character","numeric","numeric","character"))
 
 colnames(snps) <- c("chr","start","end","label")
 
-# Convert genomic positions to kbp
+### ---- CONVERT POSITIONS TO KB ----
 chrom$length_kb <- chrom$length / 1000
-snps$pos_kb <- (snps$start + snps$end) / 2000   # midpoint in kbp
+snps$pos_kb <- (snps$start + snps$end) / 2000   # midpoint in kb
 
-# Order chromosomes properly
+### ---- ORDER CHROMOSOMES ----
 chrom$chr <- factor(chrom$chr, levels=chrom$chr)
 snps$chr  <- factor(snps$chr,  levels=chrom$chr)
 
-# Build vertical spacing for chromosomes
+### ---- BUILD VERTICAL SPACING ----
 chrom$ymin <- seq(1, nrow(chrom)*2, by=2)
 chrom$ymax <- chrom$ymin + 0.6
 
-# SNP y-position centered on chromosome bar
 snps$y <- chrom$ymin[match(snps$chr, chrom$chr)] + 0.3
 
 
-### ----------- BEAUTIFIED PLOT ---------------
+### ----------- FINAL BEAUTIFIED PLOT ---------------
 p <- ggplot() +
-
+  
   # Chromosome rectangles
   geom_rect(data = chrom,
-            aes(xmin=0, xmax=length_kb, ymin=ymin, ymax=ymax),
-            fill="grey90", color="black") +
-
+            aes(xmin = 0, xmax = length_kb, ymin = ymin, ymax = ymax),
+            fill = "grey90", color = "black") +
+  
   # SNP points
   geom_point(data = snps,
-             aes(x=pos_kb, y=y),
-             color="red", size=2.2) +
-
-  # Repelled labels with arrows
+             aes(x = pos_kb, y = y),
+             color = "red", size = 2.2) +
+  
+  # Repelled labels with arrows (no overlap limit)
   geom_label_repel(data = snps,
-                   aes(x=pos_kb, y=y, label=label),
-                   size=2.5,
-                   nudge_y = 1.5,
-                   segment.color="grey40",
-                   box.padding = 0.3,
-                   force = 5,
+                   aes(x = pos_kb, y = y, label = label),
+                   size = 2.5,
+                   nudge_y = 1.7,
+                   segment.color = "grey40",
+                   box.padding = 0.35,
+                   max.overlaps = Inf,
                    min.segment.length = 0) +
-
-  # Add chromosome names on Y-axis
+  
+  # Chromosome names at center
   scale_y_continuous(
     breaks = chrom$ymin + 0.3,
     labels = chrom$chr
   ) +
-
-  labs(title="Linear Chromosome Ideogram with SNP Markers",
-       x="Genomic Position (kbp)",
-       y="Chromosome") +
-
+  
+  labs(title = "Linear Chromosome Ideogram with SNP Markers",
+       x = "Genomic Position (kbp)",
+       y = "Chromosome") +
+  
   theme_minimal(base_size = 14) +
   theme(
     panel.grid = element_blank(),
-    axis.text.y = element_text(size=10, face="bold"),
-    axis.text.x = element_text(size=10),
-    plot.title = element_text(size=18, face="bold")
+    axis.text.y = element_text(size = 11, face = "bold"),
+    axis.text.x = element_text(size = 10),
+    plot.title = element_text(size = 18, face = "bold")
   )
 
 print(p)
