@@ -31,7 +31,7 @@ chrom$ymax <- chrom$ymin + 0.6
 snps$y <- chrom$ymin[match(snps$chr, chrom$chr)] + 0.3
 
 
-### ----------- FINAL BEAUTIFIED PLOT ---------------
+### ----------- FINAL MODIFIED PLOT ---------------
 p <- ggplot() +
   
   # Chromosome rectangles
