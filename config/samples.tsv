@@ -1,0 +1,6 @@
+sample	group	R1	R2
+4-Rest	Resistant	4-Rest_R1_001.fastq	4-Rest_R2_001.fastq
+5-Rest	Resistant	5-Rest_R1_001.fastq	5-Rest_R2_001.fastq
+4-Susp	Susceptible	4-Susp_R1_001.fastq	4-Susp_R2_001.fastq
+5-Susp	Susceptible	5-Susp_R1_001.fastq	5-Susp_R2_001.fastq
+
