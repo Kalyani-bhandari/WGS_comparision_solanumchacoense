@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-# Load environment
+#Load_environment
 source ~/.bashrc
 conda activate wgs_env
 
-# Input and output directories
+#Input_and_output_directories
 TRIMDIR="results/fastp"
 OUTDIR="results/fastqc_trimmed"
 
@@ -13,9 +13,10 @@ mkdir -p "$OUTDIR"
 
 echo "Running FastQC on trimmed FASTQ files..."
 
-# Read sample table
+#Read_sample_table
 while read -r sample group R1 R2; do
-  # Skip header
+
+  #Skip_header
   [[ "$sample" == "sample" ]] && continue
 
   R1_TRIM="$TRIMDIR/${sample}_R1.trimmed.fastq.gz"
