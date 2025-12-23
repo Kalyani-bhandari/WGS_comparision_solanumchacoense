@@ -14,13 +14,13 @@ echo "Extracting HIGH and MODERATE impact variants..."
 for GROUP in Resistance_specific Susceptible_specific; do
   VCF="$ANNOTDIR/${GROUP}.annotated.vcf.gz"
 
-  # HIGH impact
+  #HIGH_impact
   bcftools view -i 'INFO/ANN ~ "HIGH"' "$VCF" -Oz \
     -o "$OUTDIR/${GROUP}.HIGH.vcf.gz"
 
   bcftools index "$OUTDIR/${GROUP}.HIGH.vcf.gz"
 
-  # MODERATE impact
+  #MODERATE_impact
   bcftools view -i 'INFO/ANN ~ "MODERATE"' "$VCF" -Oz \
     -o "$OUTDIR/${GROUP}.MODERATE.vcf.gz"
 
