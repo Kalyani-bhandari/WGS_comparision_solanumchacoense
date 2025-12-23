@@ -1,15 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-# ================================
-# Environment
-# ================================
+#Environment
 source ~/.bashrc
 conda activate wgs_env
 
-# ================================
-# Directories
-# ================================
+#Directories
 EMSDIR="results/EMS_vcfs"
 OUTDIR="results/compare_within_lines"
 
@@ -17,9 +13,7 @@ mkdir -p "$OUTDIR"
 
 echo "Running pairwise comparisons within EMS lines..."
 
-# ================================
-# Extract unique line IDs (e.g., 4, 5)
-# ================================
+#Extract_unique_line_IDs
 LINES=$(ls $EMSDIR/*.EMS.vcf.gz \
   | sed 's/.*\///' \
   | sed 's/-Rest.EMS.vcf.gz//' \
