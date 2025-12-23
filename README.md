@@ -1,13 +1,13 @@
-# Whole Genome Sequencing Analysis of EMS-Induced Mutations in *Solanum chacoense*
+# Whole Genome Sequencing Analysis of EMS Induced Mutations in *Solanum chacoense*
 
 ## Overview
-This repository contains a whole-genome sequencing (WGS) analysis pipeline developed to identify **EMS-induced single nucleotide polymorphisms (SNPs)** associated with **soft rot resistance and susceptibility** in *Solanum chacoense* M6 mutant lines.
+This repository contains a whole genome sequencing analysis pipeline developed to identify **EMS induced SNPs** associated with **soft rot resistance and susceptibility** in *Solanum chacoense* M6 mutant lines.
 
 The pipeline compares resistant and susceptible EMS mutant lines to identify:
-- Canonical EMS mutations (G→A, C→T)
-- Resistance-specific and susceptibility-specific variants
+- EMS mutations (G-A, C-T)
+- Resistance specific and susceptibility specific variants
 - Shared and unique SNPs across independent mutant lines
-- Functionally annotated candidate mutations linked to resistance-associated genes
+- Functionally annotated candidate mutations linked to resistance associated genes
 
 This work supports downstream genetic and functional analyses of resistance mechanisms against soft rot and blackleg diseases.
 
@@ -22,7 +22,7 @@ The analysis workflow includes the following steps:
 4. BAM processing and indexing (SAMtools)
 5. Variant calling (bcftools)
 6. Variant quality filtering
-7. Extraction of EMS-specific SNPs (G→A, C→T)
+7. Extraction of EMS-specific SNPs (G-A, C-T)
 8. Comparative analysis between resistant and susceptible lines
 9. Identification of shared and line-specific SNPs
 10. Functional annotation of candidate variants (SnpEff / bcftools csq)
@@ -30,7 +30,7 @@ The analysis workflow includes the following steps:
 ---
 
 ## Input Data
-- Paired-end FASTQ files from EMS mutant lines
+- Paired end FASTQ files from EMS mutant lines
 - *Solanum chacoense* M6 reference genome (`reference.fa`)
 - Gene annotation file (`.gff3`)
 - Sample metadata file describing resistant and susceptible lines
