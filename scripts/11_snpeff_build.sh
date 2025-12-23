@@ -9,16 +9,16 @@ echo "Building SnpEff database for Solanum chacoense M6..."
 
 mkdir -p "$SNPEFF_DATA"
 
-# Copy reference files
+#Copy_reference_files
 cp "$REF" "$SNPEFF_DATA/sequences.fa"
 cp "$GFF" "$SNPEFF_DATA/genes.gff"
 
-# Register genome in config
+#Register_genome_in_config
 CONFIG="$SNPEFF_DIR/snpEff.config"
 grep -q "solanum_chacoense_m6.genome" "$CONFIG" || \
   echo "solanum_chacoense_m6.genome : Solanum_chacoense_M6" >> "$CONFIG"
 
-# Build database
+#Build_database
 cd "$SNPEFF_DIR"
 java -Xmx8g -jar snpEff.jar build -gff3 -v solanum_chacoense_m6
 
