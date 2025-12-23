@@ -1,17 +1,17 @@
 #!/bin/bash
 set -e
 
-# Load environment
+#Load_environment
 source ~/.bashrc
 conda activate wgs_env
 
-# Output directory
+#Output_directory
 OUTDIR="results/fastp"
 mkdir -p "$OUTDIR"
 
 echo "Running fastp on all samples..."
 
-# Read sample table
+#Read_sample_table
 while read -r sample group R1 R2; do
   # Skip header
   [[ "$sample" == "sample" ]] && continue
