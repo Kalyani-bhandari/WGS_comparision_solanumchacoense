@@ -18,3 +18,9 @@ FASTQC_TRIM_DIR="results/fastqc_trimmed"
 BAM_DIR="results/bam"
 VCF_DIR="results/vcf"
 
+# ================================
+# SnpEff paths
+# ================================
+SNPEFF_DIR="/home/g89x126/sc_wgs/snpeff"
+SNPEFF_DATA="$SNPEFF_DIR/data/solanum_chacoense_m6"
+
