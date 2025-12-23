@@ -11,9 +11,7 @@ mkdir -p "$OUTDIR"
 
 echo "Identifying shared EMS SNPs across groups..."
 
-# ================================
-# Resistant
-# ================================
+#Resistant
 REST_VCFS=$(ls $EMSDIR/*-Rest.EMS.vcf.gz)
 
 bcftools isec -n=2 $REST_VCFS -p "$OUTDIR/Resistant_shared"
@@ -23,9 +21,7 @@ for f in "$OUTDIR/Resistant_shared"/*.vcf; do
   bcftools index "$f.gz"
 done
 
-# ================================
-# Susceptible
-# ================================
+#Susceptible
 SUSP_VCFS=$(ls $EMSDIR/*-Susp.EMS.vcf.gz)
 
 bcftools isec -n=2 $SUSP_VCFS -p "$OUTDIR/Susceptible_shared"
