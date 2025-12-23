@@ -5,7 +5,7 @@ set -euo pipefail
 source ~/.bashrc
 conda activate wgs_env
 
-#Load_path
+#Load_paths
 source config/paths.sh
 
 #Directories
