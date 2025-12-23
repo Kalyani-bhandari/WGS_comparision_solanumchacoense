@@ -11,19 +11,19 @@ mkdir -p "$OUTDIR"
 
 echo "Identifying group-specific EMS SNPs..."
 
-# Resistance-specific
+#Resistance-specific
 bcftools isec \
   "$SHAREDDIR/Resistant_shared/0000.vcf.gz" \
   "$SHAREDDIR/Susceptible_shared/0000.vcf.gz" \
   -p "$OUTDIR/Resistance_specific"
 
-# Susceptible-specific
+#Susceptible-specific
 bcftools isec \
   "$SHAREDDIR/Susceptible_shared/0000.vcf.gz" \
   "$SHAREDDIR/Resistant_shared/0000.vcf.gz" \
   -p "$OUTDIR/Susceptible_specific"
 
-# Compress + index
+#Compress_and_index
 for dir in "$OUTDIR"/*; do
   for f in "$dir"/*.vcf; do
     bgzip "$f"
