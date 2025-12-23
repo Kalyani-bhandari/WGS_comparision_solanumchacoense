@@ -1,17 +1,17 @@
 #!/bin/bash
 set -e
 
-# Load environment
+#Load_environment
 source ~/.bashrc
 conda activate wgs_env
 
-# Output directory
+#Output_directory
 OUTDIR="results/fastqc_raw"
 mkdir -p "$OUTDIR"
 
 echo "Running FastQC on raw FASTQ files..."
 
-# Read sample table
+#Read_sample_table
 while read -r sample group R1 R2; do
   # Skip header line
   [[ "$sample" == "sample" ]] && continue
