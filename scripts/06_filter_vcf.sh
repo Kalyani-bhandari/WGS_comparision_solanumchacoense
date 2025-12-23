@@ -1,20 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-# ================================
-# Environment
-# ================================
+#Environment
 source ~/.bashrc
 conda activate wgs_env
 
-# ================================
-# Load paths
-# ================================
+#Load_path
 source config/paths.sh
 
-# ================================
-# Directories
-# ================================
+#Directories
 VCFDIR="$VCF_DIR"
 OUTDIR="results/vcf_filtered"
 
@@ -22,9 +16,8 @@ mkdir -p "$OUTDIR"
 
 echo "Starting VCF quality filtering..."
 
-# ================================
-# Loop over samples
-# ================================
+#Loop_over_samples
+
 while read -r sample group R1 R2; do
   [[ "$sample" == "sample" ]] && continue
 
@@ -42,7 +35,7 @@ while read -r sample group R1 R2; do
   fi
 
   bcftools filter \
-    -e 'QUAL<30 || DP<8 || MQ<30 || MQ0F>0.05 || VDB<0.0001 || SGB<-0.6' \
+    -e 'QUAL<30 || DP<8 || MQ<30 || MQ0F>0.05 \
     "$INVCF" -Oz -o "$OUTVCF"
 
   bcftools index "$OUTVCF"
