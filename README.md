@@ -1,4 +1,4 @@
-# Whole-Genome Sequencing Analysis of EMS-Induced Mutations in *Solanum chacoense*
+# Whole Genome Sequencing Analysis of EMS-Induced Mutations in *Solanum chacoense*
 
 ## Overview
 This repository contains a whole-genome sequencing (WGS) analysis pipeline developed to identify **EMS-induced single nucleotide polymorphisms (SNPs)** associated with **soft rot resistance and susceptibility** in *Solanum chacoense* M6 mutant lines.
@@ -77,4 +77,4 @@ Montana State University
 
 ## License
 This repository is intended for academic and research use.
-# WGS_comparision_solanumchacoense
+
