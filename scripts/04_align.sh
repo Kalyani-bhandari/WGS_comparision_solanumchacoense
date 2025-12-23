@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e
 
-# Load environment
+#Load_environment
 source ~/.bashrc
 conda activate wgs_env
 
-# Load paths
+#Load_paths
 source config/paths.sh
 
-# Input / output directories
+#Input_output_directories
 TRIMDIR="results/fastp"
 BAMDIR="results/bam"
 
@@ -16,9 +16,10 @@ mkdir -p "$BAMDIR"
 
 echo "Starting BWA alignment for all samples..."
 
-# Read sample table
+#Read_sample_table
 while read -r sample group R1 R2; do
-  # Skip header
+
+  #Skip_header
   [[ "$sample" == "sample" ]] && continue
 
   R1_TRIM="$TRIMDIR/${sample}_R1.trimmed.fastq.gz"
