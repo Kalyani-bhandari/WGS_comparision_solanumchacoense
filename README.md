@@ -9,7 +9,7 @@ The pipeline compares resistant and susceptible EMS mutant lines to identify:
 - Shared and unique SNPs across independent mutant lines
 - Functionally annotated candidate mutations linked to resistance associated genes
 
-This work supports downstream genetic and functional analyses of resistance mechanisms against soft rot and blackleg diseases.
+This work supports downstream genetic and functional analyses of whole genome sequencing data.
 
 ---
 
