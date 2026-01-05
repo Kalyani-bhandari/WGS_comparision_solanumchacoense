@@ -75,6 +75,4 @@ Montana State University
 
 ---
 
-## License
-This repository is intended for academic and research use.
 
