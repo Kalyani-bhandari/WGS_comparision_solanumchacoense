@@ -53,15 +53,6 @@ All tools are intended to be run in a Conda environment.
 
 ---
 
-## Repository Structure
-├── config/ # Configuration files (paths, samples)
-├── scripts/ # Modular analysis scripts
-├── workflow/ # Master pipeline launcher
-├── results/ # Output directories (ignored by git)
-├── docs/ # Additional documentation
-
----
-
 ## Reproducibility
 This repository is being actively refactored into a modular, loop-based, and reproducible pipeline.  
 Hard-coded paths and sample names are being replaced with configuration files to improve scalability and portability across computing environments (HPC and local systems).
