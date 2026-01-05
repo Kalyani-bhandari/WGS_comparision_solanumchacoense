@@ -53,7 +53,7 @@ All tools are intended to be run in a Conda environment.
 
 ---
 
-## Repository Structure (under development)
+## Repository Structure
 ├── config/ # Configuration files (paths, samples)
 ├── scripts/ # Modular analysis scripts
 ├── workflow/ # Master pipeline launcher
